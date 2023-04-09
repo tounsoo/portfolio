@@ -1,5 +1,7 @@
 import { Client } from "@notionhq/client";
 
+export const revalidate = 600;
+
 async function getData() {
   const secret = process.env.NOTION_KEY;
   const databaseId = process.env.NOTION_DATABASE_ID;
