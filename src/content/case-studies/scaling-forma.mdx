@@ -1,0 +1,85 @@
+---
+title: "Scaling Forma"
+tagline: "Governance & contribution models at scale"
+company: "Forma Labs"
+role: "Design Systems Lead"
+year: "2024"
+duration: "9 months"
+tags: ["Governance", "Process", "Multi-team"]
+coverAccent: "var(--color-accent-green)"
+status: "published"
+---
+
+## Overview
+
+Forma already had a design system. It had worked beautifully when the company was fifty people and two product teams. At four hundred people and eight product teams, it was collapsing under its own weight.
+
+The problem was not the design. The problem was governance — or the absence of it. I was brought in to fix the process, not the pixels.
+
+## The Problem
+
+Pull requests sat for six weeks without review. Teams were forking components and maintaining their own copies. The system had three nominal "owners" with no clear decision-making authority, which meant any contested PR became a negotiation rather than a decision.
+
+The backlog had 140 open issues. No prioritization framework. Engineers had stopped filing issues because nothing seemed to happen.
+
+<Annotation type="insight">
+When I joined, I spent the first two weeks just reading — every open issue, every PR comment, every Slack thread in the `#design-system` channel. The pattern was clear: teams didn't distrust the system. They distrusted the *process*. They'd been burned by slow responses too many times.
+</Annotation>
+
+## Audit Findings
+
+I ran a contribution audit before proposing any changes. Questions: Who had contributed in the last six months? What was the median time from PR open to merge? What percentage of issues were closed without action?
+
+The answers: 23 component forks in active use across product codebases. Median PR review time: 41 days. 64% of issues closed as "won't fix" with no explanation.
+
+## System Decisions
+
+**Federated ownership model.** Each product area (Growth, Core Product, Data, Platform, etc.) has a designated "DS Champion" — an engineer or senior designer with commit rights to their domain. The core team reviews and approves, but champions can merge within their area without waiting for central sign-off.
+
+<Annotation type="decision">
+Federated ownership felt risky. What if champions make inconsistent decisions? But the alternative — a single bottleneck team — had already failed. We accepted some inconsistency risk in exchange for meaningful speed improvement.
+</Annotation>
+
+**Tiered contribution model.** Not all contributions are equal. We defined three tiers:
+
+- **T1 (Style overrides):** Color, spacing, typography tweaks within token bounds. No RFC required. PR directly to your area.
+- **T2 (Variant additions):** New variants of existing components. Lightweight RFC: one paragraph, usage example, affected teams.
+- **T3 (Net-new components):** Full RFC required. Usage data from at least two teams. Two-week open comment period. Champion sign-off.
+
+**Async by default.** The weekly all-hands sync was replaced with a monthly review. Day-to-day happened in Notion comments and a streamlined `#ds-rfc` Slack channel. Open office hours twice a week — 30 minutes, no agenda, come with questions.
+
+## Implementation
+
+I wrote the RFC template in week three and ran it by six engineers and four designers before socializing it. The template asks: What problem are you solving? Who else needs this? What does "done" look like? How will you measure it?
+
+The backlog was triaged over four weeks. Every open issue got one of three labels: `accepted`, `declined-with-reason`, or `needs-RFC`. Every declined issue got a written explanation.
+
+<Annotation type="decision">
+Writing decline reasons took three times longer than just closing issues. It was worth it. Teams saw that decisions had reasoning behind them, not arbitrary gatekeeping. One team converted their "declined" issue into a successful T2 RFC within a month.
+</Annotation>
+
+The fork cleanup was handled gradually, not in a big-bang migration. Each product area DS champion took ownership of their fork and either contributed it back as a T3 RFC or deprecated it with an official alternative.
+
+## Governance Model
+
+The RFC process is now the load-bearing structure of the system. Monthly reviews go through accepted RFCs in priority order. Champions have a voice in prioritization for their area. The core team focuses on T3 decisions and system-wide concerns.
+
+Versioning follows strict semantic versioning: patch for bug fixes, minor for new variants, major for breaking changes. Every major release has a migration guide written before the release ships.
+
+## Impact
+
+<MetricCallout metric="4 days" label="Median PR review time (down from 41)" context="Measured across 6 months post-governance overhaul" />
+
+<MetricCallout metric="2" label="Active component forks (down from 23)" context="Remaining forks are intentional divergences under active RFC review" />
+
+Engineer confidence in the system, measured via quarterly survey, went from 3.1/5 to 4.4/5 in two cycles.
+
+## Learnings
+
+Governance is a product. It needs the same care as a component — a clear purpose, a defined API (the RFC process), and documentation that explains not just the "what" but the "why."
+
+<Annotation type="learning">
+The hardest part of this project wasn't designing the process. It was earning trust from teams who'd been burned. Process documentation doesn't build trust — consistent, fast, explained decisions do. The first few months were mostly about showing up and closing things quickly.
+</Annotation>
+
+I'd start the champion network earlier. Finding the right DS Champions before you have a governance model — people who already care about system quality — makes adoption much faster than training champions after the model is designed.

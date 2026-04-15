@@ -1,0 +1,50 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  white-space: nowrap;
+}
+
+/* Sizes */
+.sm {
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-3);
+}
+
+.md {
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-4);
+}
+
+/* Colors */
+.default {
+  background-color: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+.blue {
+  background-color: var(--color-accent-subtle);
+  color: var(--color-accent-blue);
+}
+
+.green {
+  background-color: var(--color-green-100);
+  color: var(--color-green-600);
+}
+
+.amber {
+  background-color: var(--color-amber-100);
+  color: var(--color-amber-600);
+}
+
+[data-theme="dark"] .green {
+  background-color: var(--color-green-900);
+  color: var(--color-green-500);
+}
+
+[data-theme="dark"] .amber {
+  background-color: var(--color-amber-900);
+  color: var(--color-amber-500);
+}

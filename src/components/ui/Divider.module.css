@@ -1,0 +1,12 @@
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border-default);
+}
+
+.sm  { margin-block: var(--space-6); }
+.md  { margin-block: var(--space-12); }
+.lg  { margin-block: var(--space-20); }
+
+.subtle {
+  border-top-color: var(--color-border-subtle);
+}

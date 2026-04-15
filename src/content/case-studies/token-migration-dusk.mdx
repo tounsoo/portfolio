@@ -1,0 +1,94 @@
+---
+title: "Token Migration at Dusk"
+tagline: "Semantic tokens and multi-brand theming from a legacy codebase"
+company: "Dusk Technologies"
+role: "Senior Design Systems Designer"
+year: "2024"
+duration: "7 months"
+tags: ["Tokens", "Migration", "Theming"]
+coverAccent: "var(--color-accent-amber)"
+status: "published"
+---
+
+## Overview
+
+Dusk had been acquired by a larger enterprise platform and needed to white-label their product for three enterprise clients — each with distinct brand requirements, strict accessibility standards, and zero tolerance for visual inconsistency.
+
+The challenge: 1,247 hardcoded hex values in the codebase. No token file. No Figma variables. Seven years of accumulated styling decisions with no shared language.
+
+## The Problem
+
+Every brand request was effectively a fork. The engineering team estimated a full white-label for a new client would take six weeks. Client contracts required delivery in two. The business was blocked.
+
+The surface-level problem was the codebase. The deeper problem was that there had never been a separation between "this is a raw value" and "this is what this value means." Color wasn't semantic — it was just color.
+
+## Audit Findings
+
+The first thing I did was run a regex scan on the codebase.
+
+<Annotation type="insight">
+`grep -r "#[0-9A-Fa-f]" --include="*.css" --include="*.tsx" .` returned 1,247 matches across 89 unique hex values. Showing this output to the CTO ended the "how bad is it really" conversation immediately.
+</Annotation>
+
+<TokenTable tokens={[
+  { name: "Before: #1a73e8", value: "hardcoded", resolved: "#1a73e8", usage: "Used in 47 places, 6 different semantic roles" },
+  { name: "Before: #202124", value: "hardcoded", resolved: "#202124", usage: "Used in 89 places, 4 different semantic roles" },
+  { name: "--color-action-primary", value: "var(--color-blue-600)", resolved: "#2563eb", usage: "All interactive/CTA elements" },
+  { name: "--color-text-primary", value: "var(--color-gray-900)", resolved: "#1a1a1a", usage: "All primary text" },
+  { name: "--color-surface-base", value: "var(--color-gray-0)", resolved: "#ffffff", usage: "Page and card backgrounds" },
+]} />
+
+The 89 unique values collapsed to 34 semantic tokens. Many hex values were near-duplicates that had drifted over time — `#1a73e8` and `#1b74e9` appearing in different parts of the same flow.
+
+## System Decisions
+
+**Token layer before component layer.** The strategic decision that made everything else possible: we would not touch a single component until the token system was stable. Touching components first means touching them twice.
+
+**Primitive → Semantic → Brand.** Three layers:
+1. Primitive tokens: raw values, brand-neutral (`--color-blue-600: #2563eb`)
+2. Semantic tokens: meaning-based (`--color-action-primary: var(--color-blue-600)`)
+3. Brand overrides: `[data-theme="brand-a"]` semantic overrides only
+
+No brand ever touches a primitive directly. Brand tokens only override semantic tokens.
+
+<Annotation type="decision">
+This constraint — brands only override semantics — was initially controversial. Brand A's team wanted to use a custom blue that didn't exist in the primitive scale. We added the primitive, then mapped the semantic token to it. The extra step pays for itself in maintainability.
+</Annotation>
+
+**Automated codemods for the migration.** Manually replacing 1,247 instances is error-prone and expensive. We wrote jscodeshift transforms that matched hardcoded hex values and replaced them with the appropriate semantic token. The transforms were conservative — they flagged ambiguous cases (a hex used in multiple semantic roles) for manual review rather than making a guess.
+
+## Implementation
+
+Phase 1: Build the primitive token set and the semantic layer for Brand A (the original Dusk brand). Ship this in production. Verify no visual regressions.
+
+Phase 2: Run the codemods. Each engineer reviewed their domain's flagged cases. 94% of replacements were automated; 6% required manual decision.
+
+Phase 3: Build Brand B and Brand C token files. These are 40–60 line CSS files of `[data-theme="brand-x"]` overrides. That's it. The entire multi-brand capability lives in those overrides.
+
+<MetricCallout metric="1,247 → 34" label="Hardcoded values replaced with semantic tokens" context="After Phase 2 completion" />
+
+**The Figma side:** Migrated local styles to Figma Variables in parallel. Three variable collections — Brand A, B, C — with identical token names. Designers switch between brands with a single variable mode toggle.
+
+## Handling Edge Cases
+
+Brand C had no concept of "danger" states — their product domain was messaging, not financial transactions. The semantic token `--color-feedback-danger` had no meaningful equivalent in their brand language.
+
+<Annotation type="warning">
+Semantic tokens assume a universal semantic vocabulary. When a brand genuinely doesn't have a semantic concept, don't force a mapping. We used a fallback strategy: Brand C's danger token defaulted to a high-contrast neutral rather than the usual red. The UI pattern was preserved; the brand language wasn't violated.
+</Annotation>
+
+## Impact
+
+<MetricCallout metric="&lt;200 lines" label="CSS required to deploy a new brand theme" context="Brand C shipped in 4 days, not 6 weeks" />
+
+<MetricCallout metric="3 brands" label="Shipped simultaneously on the same component codebase" context="Zero component duplication across brands" />
+
+## Learnings
+
+The migration tooling was as important as the token system design. A well-designed token architecture that requires manual migration will stall. Automating the tedious parts let the team focus on the decisions that actually required judgment.
+
+<Annotation type="learning">
+Write the migration guide before you start the migration. The act of writing "here's how you move from X to Y" reveals ambiguities in your token design before you've committed to it in 1,000 places. We rewrote the naming convention twice based on feedback from the draft guide.
+</Annotation>
+
+The business outcome here was unusually concrete — a new enterprise client can now be onboarded in a week instead of six. That number has been cited in sales calls. It's a rare case where design systems work directly contributed to revenue.
