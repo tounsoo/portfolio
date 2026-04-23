@@ -1,0 +1,87 @@
+---
+title: "Building Meridian"
+tagline: "A design system built from zero at a Series B fintech"
+company: "Meridian Financial"
+role: "Design Systems Lead"
+year: "2023"
+duration: "18 months"
+tags: ["Foundations", "Tokens", "Component Library"]
+coverAccent: "var(--color-accent-blue)"
+status: "published"
+---
+
+## Overview
+
+Meridian Financial was growing fast — four product teams, twelve designers, twenty-eight engineers, and zero shared design language. I joined as their first dedicated design systems hire with a mandate to build the foundation from scratch.
+
+Eighteen months later, Meridian had a versioned component library, a structured token system synced between Figma and code, and a documentation site used by every team in the company.
+
+## The Problem
+
+The product looked different depending on which team had built it. Buttons had six different corner radii across the product. The same action — saving a record — used three different colors in three different parts of the app. Error states were inconsistent enough that a user study flagged them as confusing.
+
+Designers were duplicating work constantly. Engineers were making ad-hoc styling decisions because there was no canonical source of truth. Every sprint included undifferentiated rework.
+
+## Audit Findings
+
+Before building anything, I spent three weeks auditing the existing product and codebase.
+
+<TokenTable tokens={[
+  { name: "--color-text-primary", value: "var(--color-gray-900)", resolved: "#1a1a1a", usage: "Body text, headings" },
+  { name: "--color-bg-base", value: "var(--color-gray-0)", resolved: "#ffffff", usage: "Page backgrounds" },
+  { name: "--color-accent-default", value: "var(--color-blue-600)", resolved: "#2563eb", usage: "Interactive elements, CTAs" },
+  { name: "--color-border-default", value: "var(--color-gray-200)", resolved: "#e4e4e4", usage: "Card borders, dividers" },
+  { name: "--color-text-secondary", value: "var(--color-gray-600)", resolved: "#525252", usage: "Labels, metadata, captions" },
+]} />
+
+The raw numbers: **340 unique color values** in Figma across all files. **12 button variants** with different radii, weights, and colors. **No spacing system** — every component used hardcoded pixel values. No token file in the codebase.
+
+<Annotation type="insight">
+The audit wasn't just a design exercise. It was how I built credibility with engineering. When I showed an engineer that the codebase had 247 unique hardcoded hex values, the conversation about "why we need this" ended.
+</Annotation>
+
+## System Decisions
+
+**Three-tier token architecture.** Primitive tokens hold raw values. Semantic tokens map meaning to those values. Component tokens scope decisions to individual components. No component CSS ever references a primitive token directly.
+
+**Semantic tokens before components.** The instinct is to start building buttons. The right move is to define what "primary text" and "interactive background" mean *before* you build a single component. We spent the first two months on tokens alone.
+
+<Annotation type="decision">
+We chose semantic token naming over descriptive naming. `--color-text-primary` rather than `--color-dark-gray` means the token stays correct when the theme changes. This added two weeks of debate but saved months of migration later.
+</Annotation>
+
+**Figma Variables synced to CSS custom properties.** The Figma token library and the CSS token file are generated from the same source of truth using Style Dictionary. A designer updating a color in Figma kicks off a PR in the design tokens repo.
+
+## Implementation
+
+We started with form inputs, not buttons. Buttons are visible; inputs are used constantly and had the most inconsistency. Fixing them first showed the team immediate, tangible improvement.
+
+Component architecture followed a clear spec: every component defines its own component-level tokens, which reference semantic tokens. No component imports another component's tokens directly.
+
+<MetricCallout metric="47" label="Components shipped in V1" context="Fully documented with usage guidelines and accessibility notes" />
+
+Storybook served as the documentation layer — but the real documentation was the usage guidelines written alongside each component. Not just "here are the props," but "use this when X, not when Y."
+
+## Governance Model
+
+V1 shipped with a simple governance model: one weekly sync, a `#design-system` Slack channel, and a shared Notion backlog visible to all teams.
+
+Contribution happened through a lightweight RFC process. Teams proposing a new component fill out a one-page template: what problem does this solve, which teams need it, what's the usage pattern? RFCs with broad applicability got prioritized; one-off needs were documented as patterns without becoming components.
+
+## Impact
+
+<MetricCallout metric="94%" label="Adoption rate across all product teams" context="Measured by component usage in Figma files, 6 months post-launch" />
+
+<MetricCallout metric="3.2×" label="Faster design-to-dev handoff" context="Per team retrospective, Q4 2023 vs Q4 2022" />
+
+The accessibility improvement was unexpected: because every component was built to WCAG 2.1 AA standards from the start, the product's accessibility score improved from 61 to 89 in six months without a dedicated accessibility sprint.
+
+## Learnings
+
+Starting with tokens instead of components was the right call, but it required selling the delay to stakeholders. A visual preview of the token system — color palette, type ramp, spacing scale — helped make the "invisible" work legible.
+
+<Annotation type="learning">
+The system is not done when it ships. The teams that got the most value from Meridian were the ones that sent someone to the weekly sync. Adoption is a relationship, not a rollout.
+</Annotation>
+
+I would start the governance model earlier — ideally during the audit phase, not after V1. Getting engineers and product managers involved in RFC reviews from the beginning would have built more ownership sooner.
