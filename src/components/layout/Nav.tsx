@@ -18,7 +18,7 @@ export default function Nav() {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <Link href="/" className={styles.logo} aria-label="Elara Reyes — home">
-          ER
+          Elara Reyes
         </Link>
         <ul className={styles.links}>
           {links.map(({ href, label }) => (

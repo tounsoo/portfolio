@@ -13,10 +13,14 @@ export default function CaseStudyCard({
   tags,
   year,
   role,
+  coverAccent,
   index,
 }: CaseStudyCardProps) {
   return (
-    <li className={styles.item}>
+    <li
+      className={styles.item}
+      style={{ "--accent-color": coverAccent } as React.CSSProperties}
+    >
       <Link href={`/work/${slug}`} className={styles.link}>
         <span className={styles.number}>
           {String(index).padStart(2, "0")}
@@ -33,7 +37,7 @@ export default function CaseStudyCard({
         <div className={styles.aside}>
           <span className={styles.year}>{year}</span>
           <span className={styles.role}>{role}</span>
-          <span className={styles.arrow}>→</span>
+          <span className={styles.arrow} aria-hidden="true">→</span>
         </div>
       </Link>
     </li>
