@@ -10,12 +10,15 @@ export default function WorkGrid({ caseStudies }: WorkGridProps) {
   return (
     <section className={styles.section}>
       <div className={styles.inner}>
-        <h2 className={styles.heading}>Selected Work</h2>
-        <div className={styles.grid}>
-          {caseStudies.map((cs) => (
-            <CaseStudyCard key={cs.slug} {...cs} />
-          ))}
+        <div className={styles.header}>
+          <span className={styles.label}>Selected Work</span>
+          <span className={styles.count}>{String(caseStudies.length).padStart(2, "0")}</span>
         </div>
+        <ul className={styles.list}>
+          {caseStudies.map((cs, i) => (
+            <CaseStudyCard key={cs.slug} index={i + 1} {...cs} />
+          ))}
+        </ul>
       </div>
     </section>
   );

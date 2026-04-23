@@ -1,7 +1,10 @@
 import Link from "next/link";
-import Tag from "@/components/ui/Tag";
 import type { CaseStudy } from "@/types/case-study";
 import styles from "./CaseStudyCard.module.css";
+
+interface CaseStudyCardProps extends CaseStudy {
+  index: number;
+}
 
 export default function CaseStudyCard({
   slug,
@@ -10,26 +13,29 @@ export default function CaseStudyCard({
   tags,
   year,
   role,
-  coverAccent,
-}: CaseStudy) {
+  index,
+}: CaseStudyCardProps) {
   return (
-    <article className={styles.card}>
-      <div className={styles.accent} style={{ backgroundColor: coverAccent }} />
+    <li className={styles.item}>
       <Link href={`/work/${slug}`} className={styles.link}>
+        <span className={styles.number}>
+          {String(index).padStart(2, "0")}
+        </span>
         <div className={styles.body}>
-          <div className={styles.meta}>
-            <span className={styles.role}>{role}</span>
-            <span className={styles.year}>{year}</span>
-          </div>
           <h2 className={styles.title}>{title}</h2>
           <p className={styles.tagline}>{tagline}</p>
           <div className={styles.tags}>
-            {tags.map((tag) => (
-              <Tag key={tag} label={tag} />
+            {tags.slice(0, 3).map((tag) => (
+              <span key={tag} className={styles.tag}>{tag}</span>
             ))}
           </div>
         </div>
+        <div className={styles.aside}>
+          <span className={styles.year}>{year}</span>
+          <span className={styles.role}>{role}</span>
+          <span className={styles.arrow}>→</span>
+        </div>
       </Link>
-    </article>
+    </li>
   );
 }
